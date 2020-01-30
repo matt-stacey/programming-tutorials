@@ -2,6 +2,7 @@
 
 import pygame
 import time
+import random
 import os
 
 pygame.init()
@@ -13,16 +14,33 @@ display_height = 600
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A Bit Racey')
 
+high = 0
+
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 
 carImg = pygame.image.load(os.path.join(res, 'racecar.png'))
 car_width = 73
+car_height = 73  # just a guess for now
 
 log = open(os.path.join(res, 'game.log'), 'w')
 
 clock = pygame.time.Clock()
+
+def things_dodged(dodged, speed, width):
+    font = pygame.font.SysFont(None, 25)
+    words = ('Dodged: ', 'Speed: ', 'Width: ')
+    nums = (dodged, speed, width)
+    for num, wn in enumerate(zip(words, nums)):
+        message = '{}{}'.format(wn[0], wn[1])
+        text = font.render(message, True, black)
+        gameDisplay.blit(text,(0, 25*num))
+
+def high_score(score):
+    font = pygame.font.SysFont(None, 25)
+    text = font.render('High score: {}'.format(score), True, black)
+    gameDisplay.blit(text,(0, 100))
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -41,6 +59,9 @@ def crash():
     message_display('You Crashed')
     game_loop()
     
+def things(thingx, thingy, thingw, thingh, color):
+    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
+
 def car(x, y):
     gameDisplay.blit(carImg, (x, y))
 
@@ -51,8 +72,17 @@ def exit_game():
         
 def game_loop():
     x = display_width * 0.45
-    x_change = {}
     y = display_height * 0.8
+    x_change = {}
+    
+    thing_width = 100
+    thing_height = 100
+    thing_startx = random.randrange(0, display_width - thing_width)
+    thing_starty = -600
+    thing_speed = 7
+    thing_color = black
+    
+    dodged = 0
     
     gameExit = False
     while not gameExit:
@@ -79,12 +109,33 @@ def game_loop():
                     
         for xchg in x_change.values():
             x += xchg
+        thing_starty += thing_speed
         
         gameDisplay.fill(white)
+        # things(thingx, thingy, thingw, thingh, color)
+        things(thing_startx, thing_starty, thing_width, thing_height, thing_color)
         car(x, y)
+        things_dodged(dodged, thing_speed, thing_width)
+        high_score(globals()['high'])
         
         if x < 0 or display_width < x + car_width:
             crash()
+        
+        if (thing_startx <= x + car_width and x <= thing_startx + thing_width):  # lateral overlap
+            if (y <= thing_starty + thing_height and thing_starty <= y + car_height):  # vertical overlap
+                crash()
+        
+        if thing_starty > display_height:
+            thing_starty = 0 - thing_height
+            thing_startx = random.randrange(0,display_width)
+            dodged += 1
+            if dodged > globals()['high']:
+                globals()['high'] = dodged
+            thing_speed += 1
+            thing_width += (dodged * 1.2)
+            thing_color = (random.randint(0, 127),
+                           random.randint(0, 127),
+                           random.randint(0, 127))
         
         pygame.display.update()
         clock.tick(60)
