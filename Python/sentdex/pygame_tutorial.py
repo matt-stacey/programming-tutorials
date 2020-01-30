@@ -61,7 +61,6 @@ def game_loop():
                 exit_game()
     
             if event.type == pygame.FINGERDOWN:
-                log.write(str(event) + '\n')
                 if event.x < 0.5:
                     x_change[event.fingerId] = -5
                 else:
@@ -73,7 +72,6 @@ def game_loop():
                     x_change[event.key] = 5
 
             if event.type == pygame.FINGERUP:
-                log.write(str(event) + '\n')
                 x_change.pop(event.fingerId, None)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -92,4 +90,4 @@ def game_loop():
         clock.tick(60)
     
 game_loop()
-exit()
+exit_game()
