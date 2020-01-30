@@ -1,4 +1,5 @@
 # https://pythonprogramming.net/pygame-python-3-part-1-intro/
+# with some modifications
 
 import pygame
 import time
@@ -8,8 +9,8 @@ import os
 pygame.init()
 
 res = 'racey_resources'
-display_width = 800
-display_height = 600
+display_width = 1080
+display_height = 1200
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A Bit Racey')
@@ -127,7 +128,6 @@ def game_loop():
         
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
-            thing_startx = random.randrange(0,display_width)
             dodged += 1
             if dodged > globals()['high']:
                 globals()['high'] = dodged
@@ -136,6 +136,7 @@ def game_loop():
             thing_color = (random.randint(0, 127),
                            random.randint(0, 127),
                            random.randint(0, 127))
+            thing_startx = random.randrange(0,display_width - thing_width)
         
         pygame.display.update()
         clock.tick(60)
