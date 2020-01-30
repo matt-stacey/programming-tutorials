@@ -66,10 +66,19 @@ def game_loop():
                     x_change[event.fingerId] = -5
                 else:
                     x_change[event.fingerId] = 5
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    x_change[event.key] = -5
+                if event.key == pygame.K_RIGHT:
+                    x_change[event.key] = 5
+
             if event.type == pygame.FINGERUP:
                 log.write(str(event) + '\n')
                 x_change.pop(event.fingerId, None)
-        
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    x_change.pop(event.key, None)
+                    
         for xchg in x_change.values():
             x += xchg
         
