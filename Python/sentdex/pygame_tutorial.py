@@ -28,14 +28,14 @@ bright_green = (0,255,0)
 
 freeSans = os.path.join(res,'FreeSansBold.ttf')
 
-carImg = pygame.image.load(os.path.join(res, 'racecar.png'))
+carImg = pygame.image.load(os.path.join(res, 'racecar.png'))  # https://pythonprogramming.net/static/images/pygame/racecar.png
 car_width = 73
 car_height = 73  # just a guess for now
 car_spd = 10
 
 #pygame.mixer.init()
-crash_sound = pygame.mixer.Sound(os.path.join(res, 'Crash-Cymbal-4.wav'))
-pygame.mixer.music.load(os.path.join(res, 'jazz.mp3'))
+crash_sound = pygame.mixer.Sound(os.path.join(res, 'Crash-Cymbal-4.wav'))  # https://freewavesamples.com/crash-cymbal-4
+pygame.mixer.music.load(os.path.join(res, 'bensound-allthat.mp3'))  # https://www.bensound.com/bensound-music/bensound-allthat.mp3
 pygame.mixer.music.set_volume(.15)
 pygame.mixer.music.play(-1)
 
