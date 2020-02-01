@@ -105,7 +105,7 @@ for episode in range(EPISODES):
         print(f'Episode: {episode:>5d}, average reward: {average_reward:>4.1f}, current epsilon: {epsilon:>1.2f}')
         
     if episode % 100 == 0:
-        np.save(f"qtables/{episode}-qtable.npy", q_table)
+        np.save(f"qlearn_qtables/{episode}-qtable.npy", q_table)
 
 env.close()
 
