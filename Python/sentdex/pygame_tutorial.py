@@ -12,7 +12,7 @@ res = 'racey_resources'
 log = open(os.path.join(res, 'game.log'), 'w')
 
 display_width = 1080
-display_height = 1200
+display_height = 800
 
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('A Bit Racey')
@@ -30,7 +30,7 @@ freeSans = os.path.join(res,'FreeSansBold.ttf')
 
 carImg = pygame.image.load(os.path.join(res, 'racecar.png'))
 car_width = 73
-car_height = 73  # just a guess for now
+car_height = 73
 car_spd = 10
 
 #pygame.mixer.init()
@@ -72,7 +72,7 @@ def message_display(text):
 def button(msg,x,y,w,h,ic,ac,s,func=None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    
+
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
         if click[0] == 1 and func:
@@ -97,7 +97,7 @@ def game_intro():
     btn_L = display_width / 2 - btn_w * 2
     btn_R = display_width / 2 + btn_w
     btn_up = display_height * 0.8
-    
+
     intro = True
 
     while intro:
@@ -106,20 +106,17 @@ def game_intro():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-                
+
         gameDisplay.fill(white)
         largeText = pygame.font.Font(freeSans,115)
         TextSurf, TextRect = text_objects("A bit Racey", largeText)
         TextRect.center = ((display_width/2),(display_height/2))
         gameDisplay.blit(TextSurf, TextRect)
-        
-        #mouse = pygame.mouse.get_pos()
 
-        #print(mouse)
         #button(msg,x,y,w,h,ic,ac,s,func)
         button('GO!', btn_L, btn_up, btn_w, btn_h, green, bright_green, 50, game_loop)
         button('STOP!', btn_R, btn_up, btn_w, btn_h, red, bright_red, 50, exit_game)
-        
+
         pygame.display.update()
         clock.tick(15)
 
@@ -136,27 +133,27 @@ def exit_game():
     time.sleep(fade_out)
     pygame.quit()
     quit()
-        
+
 def game_loop():
     x = display_width * 0.45
     y = display_height * 0.8
     x_change = {}
-    
+
     thing_width = 100
     thing_height = 100
     thing_startx = random.randrange(0, display_width - thing_width)
     thing_starty = -600
     thing_speed = 7
     thing_color = black
-    
+
     dodged = 0
-    
+
     gameExit = False
     while not gameExit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit_game()
-    
+
             if event.type == pygame.FINGERDOWN:
                 if event.x < 0.5:
                     x_change[event.fingerId] = -car_spd
@@ -164,34 +161,33 @@ def game_loop():
                     x_change[event.fingerId] = car_spd
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    x_change[event.key] = -5
+                    x_change[event.key] = -car_spd
                 if event.key == pygame.K_RIGHT:
-                    x_change[event.key] = 5
+                    x_change[event.key] = car_spd
 
             if event.type == pygame.FINGERUP:
                 x_change.pop(event.fingerId, None)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_change.pop(event.key, None)
-                    
+
         for xchg in x_change.values():
             x += xchg
         thing_starty += thing_speed
-        
+
         gameDisplay.fill(white)
-        # things(thingx, thingy, thingw, thingh, color)
         things(thing_startx, thing_starty, thing_width, thing_height, thing_color)
         car(x, y)
         things_dodged(dodged, thing_speed, thing_width)
         high_score(globals()['high'])
-        
+
         if x < 0 or display_width < x + car_width:
             crash()
-        
+
         if (thing_startx <= x + car_width and x <= thing_startx + thing_width):  # lateral overlap
             if (y <= thing_starty + thing_height and thing_starty <= y + car_height):  # vertical overlap
                 crash()
-        
+
         if thing_starty > display_height:
             thing_starty = 0 - thing_height
             dodged += 1
@@ -203,7 +199,7 @@ def game_loop():
                            random.randint(0, 127),
                            random.randint(0, 127))
             thing_startx = random.randrange(0,int(display_width - thing_width))
-        
+
         pygame.display.update()
         clock.tick(60)
 
